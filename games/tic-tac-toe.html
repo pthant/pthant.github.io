@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="reset.css">
+    <style>
+        * {
+            /* background-color: #14bdac; */
+            background-color: rgb(242, 235, 211);
+        }
+
+        #game {
+            /* border: 1px solid blue; */
+            position: absolute;
+            width: 608px;
+            height: 608px;
+            left: 50%;
+            top: 50%;
+            margin-left: -304px;
+            margin-top: -304px;
+
+            -webkit-user-select: none;
+            /* Safari */
+            user-select: none;
+        }
+
+        button {
+            position: relative;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            background-color: rgb(11, 11, 11, 0.5);
+            color: rgb(242, 235, 211);
+            margin-top: 8px;
+            padding: 8px;
+            font-size: 24px;
+        }
+
+        td {
+            width: 200px;
+            height: 200px;
+            border: 4px none rgba(11, 11, 11, 0.4);
+            font: 12em monospace;
+            text-align: center;
+        }
+        
+        td.win {
+            transition: color 0.4s;
+            color: #14bdac;
+        }
+
+        .top>td {
+            border-bottom-style: solid;
+        }
+
+        .bottom>td {
+            border-top-style: solid;
+        }
+
+        td.left {
+            border-right-style: solid;
+        }
+
+        td.right {
+            border-left-style: solid;
+        }
+
+        .X {
+            color: rgb(11, 11, 11);
+        }
+        .O {
+            color: rgb(11, 11, 11);
+        }
+
+
+        @media (max-width: 960px),
+        (max-height: 960px) {
+            #game {
+                width: 366px;
+                height: 366px;
+                margin-left: -183px;
+                margin-top: -183px;
+            }
+
+            td {
+                width: 120px;
+                height: 120px;
+                border-width: 3px;
+                font: 8em monospace;
+            }
+        }
+    </style>
+    <script>
+        function findWinner(cells) {
+            for (let i = 0; i < 3; i++) {
+                if (cells[3 * i].innerHTML !== "" && cells[3 * i].innerHTML === cells[1 + 3 * i].innerHTML && cells[3 * i].innerHTML === cells[2 + 3 * i].innerHTML) {
+                    [3 * i, 1 + 3 * i, 2 + 3 * i].forEach(idx => cells[idx].classList.add("win"))
+                    return cells[3 * i].innerHTML
+                }
+            }
+            for (let i = 0; i < 3; i++) {
+                if (cells[i].innerHTML !== "" && cells[i].innerHTML === cells[3 + i].innerHTML && cells[i].innerHTML === cells[6 + i].innerHTML) {
+                    [i, 3 + i, 6 + i].forEach(idx => cells[idx].classList.add("win"))
+                    return cells[i].innerHTML
+                }
+            }
+            if (cells[2].innerHTML !== "" && cells[2].innerHTML === cells[4].innerHTML && cells[2].innerHTML === cells[6].innerHTML) {
+                [2, 4, 6].forEach(idx => cells[idx].classList.add("win"))
+                return cells[2].innerHTML
+            }
+            if (cells[0].innerHTML !== "" && cells[0].innerHTML === cells[4].innerHTML && cells[0].innerHTML === cells[8].innerHTML) {
+                [0, 4, 8].forEach(idx => cells[idx].classList.add("win"))
+                return cells[0].innerHTML
+            }
+        }
+
+        function isFull(cells) {
+            for (let i = 0; i < 9; i++) {
+                if (cells[i].innerHTML === "") {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const cells = document.querySelectorAll("td");
+            let currentPlayer = "X";
+            cells.forEach(cell => cell.addEventListener("click", clickHandler));
+
+            function clickHandler() {
+                this.classList.add(currentPlayer)
+                this.innerHTML = currentPlayer;
+                currentPlayer = currentPlayer === "X" ? "O" : "X"
+
+                const winner = findWinner(cells)
+                if (winner != null) {
+                    console.log(winner)
+                    cells.forEach(cell => cell.removeEventListener("click", clickHandler))
+                } else if (isFull(cells)) {
+                    console.log("draw")
+                    cells.forEach(cell => cell.removeEventListener("click", clickHandler))
+                }
+                this.removeEventListener("click", clickHandler)
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div id="game">
+        <table>
+            <tr class="top">
+                <td class="left"></td>
+                <td class=""></td>
+                <td class="right"></td>
+            </tr>
+            <tr>
+                <td class="left"></td>
+                <td class=""></td>
+                <td class="right"></td>
+            </tr>
+            <tr class="bottom">
+                <td class="left"></td>
+                <td class=""></td>
+                <td class="right"></td>
+            </tr>
+        </table>
+        <button type="button" onclick="window.location.reload()">Reset</button>
+    </div>
+</body>
+
+</html>
